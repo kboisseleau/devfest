@@ -28,7 +28,7 @@ export class SocketsGateway implements OnGatewayConnection, OnGatewayDisconnect 
   }
 
   async handleSendFileStream (buf: Buffer): Promise<void> {
-    this.wss.emit('receiveFile', buf)
+    this.wss.emit('receiveFile', `data:image/png;base64, ${buf.toString('base64')}`)
   }
 
   // startMyTimer(){}
