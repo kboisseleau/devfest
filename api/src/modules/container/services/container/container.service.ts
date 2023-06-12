@@ -23,14 +23,27 @@ export class ContainerService {
       container.lastname = 'boisseleau'
       container.pathfile = pathFile
 
-      const ret = await this._containerRepo.create(container)
+      const ret = await this._containerRepo.create(container) as any
 
       if (ret) {
         const buf = await this._getFile(ret.pathfile)
-        this._socketGateway.handleSendFileStream(buf)
+        ret.base64 = `data:image/png;base64, ${buf.toString('base64')}`
+        this._socketGateway.handleSendFileStream(ret)
       }
     } else {
       throw new BadRequestException('Not file')
+    }
+  }
+
+  public async getFiles (): Promise<any> {
+    const containers = await this._containerRepo.findAll() as any
+    if (containers?.length) {
+      for (const c of containers) {
+        const buf = await this._getFile(c.pathfile)
+        c.base64 = `data:image/png;base64,  ${buf.toString('base64')}`
+      }
+
+      return containers
     }
   }
 

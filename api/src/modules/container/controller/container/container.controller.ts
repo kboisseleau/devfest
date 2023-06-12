@@ -1,6 +1,7 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ContainerService } from '../../services/container/container.service'
+import { Container } from 'db/entities/Container'
 
 @Controller('container')
 export class ContainerController {
@@ -9,8 +10,13 @@ export class ContainerController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
-  async cutPdf (@UploadedFile() file: Express.Multer.File): Promise<void> {
+  async saveFile (@UploadedFile() file: Express.Multer.File): Promise<void> {
     console.log(file)
     this._containerService.save(file)
+  } 
+
+  @Get()
+  async getFiles (): Promise<Container[]> {
+    return this._containerService.getFiles()
   } 
 }
