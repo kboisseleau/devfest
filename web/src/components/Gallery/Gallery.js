@@ -26,57 +26,69 @@ cursor: pointer;
 background-color: transparent;
 `
 const imgTest = [
-  "http://placekitten.com/200/300",
-  "http://placekitten.com/200/300",
-  "http://placekitten.com/200/300",
-  "http://placekitten.com/200/300"
+  {id: 1, photo:"https://images.unsplash.com/photo-1686594108849-dcaba26cdf27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=916&q=80"},
+  {id: 2, photo: "https://images.unsplash.com/photo-1686407449898-79cd2d0eba4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=435&q=80"},
+  {id: 3, photo: "https://images.unsplash.com/photo-1686668240087-c1b3f39e68d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=436&q=80"},
+  {id: 4, photo: "https://images.unsplash.com/photo-1686610620643-0ba20d31b6f5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80"}
 ]
 function Gallery() {
   const sizeIcon = '2em'
-  const [hasVoted, setHasVoted] = useState(0)
-  const [showModal, setShowModal] = useState([false, false, false, false])
+  const [hasVoted, setHasVoted] = useState([])
+  const [showModal, setShowModal] = useState([])
+  const [modalId, setModalId] = useState(null)
+  const [imgSrc, setImgSrc] = useState('')
+
  //const [countVote, setCountVote] = useState({value: 0})
 
-  const toggleVote = (id, index) => {
-    setHasVoted(index)
+  const toggleVote = (item) => {
+    let index = hasVoted.findIndex((i) => i === item.id)
+
+    if (index >= 0) {
+      hasVoted.splice(index, 1)
+    }
+    else {
+      hasVoted.push(item.id)
+    }
+    setHasVoted([...hasVoted])
   }
   const shareImg = () => {
     console.log('share on social media')
   }
   const toggleModal = (index) => {
-    showModal[index] = true;
-    const newState = showModal[index]
-    setShowModal(newState);
+    let indexOpen = index
+    let arrayIndex = indexOpen
+    let test = showModal[arrayIndex]
+    let isOpen = true
+    setShowModal(isOpen);
   }
-  const callbackModal = () => {
-    setShowModal(false)
+  const callbackModal = (index) => {
+    let isOpen = showModal[index]
+    isOpen = false;
+    setShowModal(isOpen)
   }
     return (
       <ContentGallery>
         {/* counter {countVote.value} */}
 
-        {imgTest.map((url, id) => {
+        {imgTest.map((item, index) => {
           return (
             <>
               <ImgContainer>
-               {/*  {hasVoted} */}
+               vote {hasVoted}
                 {/* open modal where user can vote and share */}
-                  <Img src={url} key={id} onClick={() => toggleModal(id)} />
-                  <Btn onClick={(e) => toggleVote(e.target.id, id)}>
-                    {hasVoted === id ?  <AiFillHeart id={id} size={sizeIcon} /> : <AiOutlineHeart id={id} size={sizeIcon} />}
+                  <Img src={item.photo} key={index} onClick={() => {toggleModal(index); setModalId(index); setImgSrc(item.photo)}} />
+                  {/* hasVoted.includes(id) */}
+                  <Btn onClick={() => toggleVote(item)}>
+                    { hasVoted.findIndex(i => i === item.id) >= 0 ?  <AiFillHeart id={index} size={sizeIcon} /> : <AiOutlineHeart id={index} size={sizeIcon} />}
                     {/* add or remove vote on img id */}
                   </Btn>
                   <Btn onClick={() => shareImg()}><AiOutlineShareAlt size={sizeIcon} /></Btn>
                   {/* open modal of sharing on social media */}
-                </ImgContainer>
-                {showModal && <FullImg show={showModal[id]} imgId={id} urlImg={url} handleClose={callbackModal} />}
-                
+                </ImgContainer>         
             </>
-
-
           )
         })}
-        
+        {showModal && <FullImg show={showModal[modalId]} imgId={modalId} urlImg={imgSrc} handleClose={callbackModal} />}
       </ContentGallery>
 
     )

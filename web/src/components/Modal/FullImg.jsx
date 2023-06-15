@@ -34,7 +34,8 @@ function FullImg({show, imgId, urlImg, handleClose}) {
           <BtnClose onClick={() => handleClose()}>
             <IoMdCloseCircle/>
           </BtnClose>
-          <ImgFull src={urlImg} />        
+          <ImgFull src={urlImg} />
+               
         </Modal>
       </>
       )
