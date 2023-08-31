@@ -5,9 +5,11 @@ import Gallery from '../../components/Gallery/Gallery';
 const socket = io("http://localhost:3001");
 
 function Home() {
+  const [file, setFile] = useState()
   useEffect(() => {
-    socket.on("receiveFile", (msg) => {
-      console.log(msg)
+    socket.on("receiveFile", (file) => {
+      console.log(file)
+      setFile(file)
     });
   }, []);
 

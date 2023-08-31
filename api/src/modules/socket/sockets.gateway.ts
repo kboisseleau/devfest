@@ -27,8 +27,8 @@ export class SocketsGateway implements OnGatewayConnection, OnGatewayDisconnect 
     this._logger.log(`Client Connected: ${client.id}`)
   }
 
-  async handleSendFileStream (buf: Buffer): Promise<void> {
-    this.wss.emit('receiveFile', buf)
+  async handleSendFileStream (container: any): Promise<void> {
+    this.wss.emit('receiveFile', container)
   }
 
   // startMyTimer(){}
