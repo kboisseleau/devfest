@@ -33,23 +33,42 @@ const imgTest = [
 ]
 function Gallery() {
   const sizeIcon = '2em'
-  const [hasVoted, setHasVoted] = useState([])
+
+  const [hasLiked, setHasLiked] = useState([])
   const [showModal, setShowModal] = useState([])
   const [modalId, setModalId] = useState(null)
   const [imgSrc, setImgSrc] = useState('')
+  const [count, setCount] = useState([])
 
- //const [countVote, setCountVote] = useState({value: 0})
+  const counterLike = (index) => {
+    console.log(Number(count))
+    return count[index]
+  }
 
-  const toggleVote = (item) => {
-    let index = hasVoted.findIndex((i) => i === item.id)
+  const increment = (i) => {
+    let newCount = count  + 1
+    console.log(newCount)
+    setCount([...newCount])
+  }
 
-    if (index >= 0) {
-      hasVoted.splice(index, 1)
+  const decrement = (i) => {
+    let newCount = count - 1
+    setCount([...newCount])
+  }
+
+  const toggleLike = (item, index) => {
+    let likedIndex = hasLiked.findIndex((i) => i === item.id)
+    
+    if (likedIndex >= 0) {
+      hasLiked.splice(likedIndex, 1)
+      decrement(index)
+      
     }
     else {
-      hasVoted.push(item.id)
+      hasLiked.push(item.id)
+      increment(index)
     }
-    setHasVoted([...hasVoted])
+    setHasLiked([...hasLiked])
   }
   const shareImg = () => {
     console.log('share on social media')
@@ -57,7 +76,7 @@ function Gallery() {
   const toggleModal = (index) => {
     let indexOpen = index
     let arrayIndex = indexOpen
-    let test = showModal[arrayIndex]
+    //let test = showModal[arrayIndex]
     let isOpen = true
     setShowModal(isOpen);
   }
@@ -68,22 +87,17 @@ function Gallery() {
   }
     return (
       <ContentGallery>
-        {/* counter {countVote.value} */}
-
         {imgTest.map((item, index) => {
           return (
             <>
               <ImgContainer>
-               vote {hasVoted}
-                {/* open modal where user can vote and share */}
                   <Img src={item.photo} key={index} onClick={() => {toggleModal(index); setModalId(index); setImgSrc(item.photo)}} />
-                  {/* hasVoted.includes(id) */}
-                  <Btn onClick={() => toggleVote(item)}>
-                    { hasVoted.findIndex(i => i === item.id) >= 0 ?  <AiFillHeart id={index} size={sizeIcon} /> : <AiOutlineHeart id={index} size={sizeIcon} />}
-                    {/* add or remove vote on img id */}
+                  <Btn onClick={() => toggleLike(item, index)}>
+                    { hasLiked.findIndex(i => i === item.id) >= 0 ?  <AiFillHeart id={index} size={sizeIcon} /> 
+                    : <AiOutlineHeart id={index} size={sizeIcon} />}
                   </Btn>
+                  <span>{counterLike(index)}</span>
                   <Btn onClick={() => shareImg()}><AiOutlineShareAlt size={sizeIcon} /></Btn>
-                  {/* open modal of sharing on social media */}
                 </ImgContainer>         
             </>
           )
